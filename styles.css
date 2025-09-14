@@ -47,6 +47,40 @@ a { color: inherit; text-decoration: none; }
 .nav{ display:flex; align-items:center; justify-content:space-between; padding:12px 16px; }
 .brand img{ height:64px; width:auto; filter: invert(1) brightness(2); } /* make dark logo light */
 .nav-links{ display:none; gap:32px; font-size:.95rem; }
+
+/* --- Animated desktop nav links --- */
+.nav-links a{
+  position: relative;
+  padding: 6px 0;
+  transition: color .25s ease, transform .25s ease;
+}
+.nav-links a::after{
+  content: "";
+  position: absolute;
+  left: 0; bottom: -4px;
+  width: 100%; height: 2px;
+  background: var(--emerald);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .25s ease;
+}
+.nav-links a:hover,
+.nav-links a:focus{
+  color: var(--emerald-400);
+  transform: translateY(-2px);
+}
+.nav-links a:hover::after,
+.nav-links a:focus::after{
+  transform: scaleX(1);
+}
+/* Active section link (for JS scrollspy) */
+.nav-links a.active{
+  color: var(--emerald);
+}
+.nav-links a.active::after{
+  transform: scaleX(1);
+}
+
 .nav-cta{ display:flex; align-items:center; gap:12px; }
 
 /* Menu button – clearer, interactive */
@@ -55,11 +89,23 @@ a { color: inherit; text-decoration: none; }
   height:44px; width:44px; border-radius:12px; border:1px solid var(--ring);
   background: rgba(255,255,255,.05); color:#fafafa; cursor:pointer;
   transition: background .2s ease, transform .2s ease, border-color .2s ease;
+  position: relative; overflow: hidden;
 }
 .menu-btn:hover{ background: rgba(255,255,255,.10); transform: scale(1.05); }
 .menu-btn:active{ transform: scale(.95); }
 .menu-btn svg{ width:24px; height:24px; stroke: currentColor; stroke-width: 2; fill: none; }
-/* Active (menu open) state */
+/* Crossfade/rotate hamburger ↔ close */
+.menu-btn .icon-hamburger,
+.menu-btn .icon-close{
+  position: absolute; inset: 0; margin: auto;
+  transition: opacity .18s ease, transform .18s ease;
+}
+.menu-btn .icon-hamburger{ opacity: 1; transform: rotate(0deg) scale(1); }
+.menu-btn .icon-close{ opacity: 0; transform: rotate(-90deg) scale(.8); }
+.menu-btn.active .icon-hamburger{ opacity: 0; transform: rotate(90deg) scale(.8); }
+.menu-btn.active .icon-close{ opacity: 1; transform: rotate(0deg) scale(1); }
+
+/* Active (menu open) state color */
 .menu-btn.active{ background: var(--emerald); color:#000; border-color: var(--emerald); }
 .menu-btn.active svg{ stroke:#000; }
 
@@ -83,6 +129,17 @@ a { color: inherit; text-decoration: none; }
   opacity: 1;
   pointer-events: auto;
 }
+
+/* Staggered reveal for mobile links */
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.mobile-menu.open .inner > *{ animation: slideIn .3s ease both; }
+.mobile-menu.open .inner > *:nth-child(1){ animation-delay: .05s; }
+.mobile-menu.open .inner > *:nth-child(2){ animation-delay: .10s; }
+.mobile-menu.open .inner > *:nth-child(3){ animation-delay: .15s; }
+.mobile-menu.open .inner > *:nth-child(4){ animation-delay: .20s; }
 
 /* ---------- Hero ---------- */
 .hero{ position:relative; overflow:hidden; }
